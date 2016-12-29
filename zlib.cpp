@@ -55,34 +55,26 @@ ZlibDecompressor::ZlibDecompressor(BufferedTransformation *attachment, bool repe
 
 void ZlibDecompressor::ProcessPrestreamHeader()
 {
-
 	m_adler32.Restart();
-
-	printf("\nZlibDecompressor::ProcessPrestreamHeader 2");
 
 	byte cmf;
 	byte flags;
 
 	if (!m_inQueue.Get(cmf) || !m_inQueue.Get(flags)) {
-		printf("\nZlibDecompressor::ProcessPrestreamHeader 3");
 		throw HeaderErr();
 	}
 	if ((cmf*256+flags) % 31 != 0) {
-		printf("\nZlibDecompressor::ProcessPrestreamHeader 4");
 		throw HeaderErr();	// if you hit this exception, you're probably trying to decompress invalid data
 	}
 
 	if ((cmf & 0xf) != DEFLATE_METHOD)
 	{
-		printf("\nZlibDecompressor::ProcessPrestreamHeader 5");
 		throw UnsupportedAlgorithm();
 	}
 	if (flags & FDICT_FLAG) {
-		printf("\nZlibDecompressor::ProcessPrestreamHeader 6");
 		throw UnsupportedPresetDictionary();
 	}
 	m_log2WindowSize = 8 + (cmf >> 4);
-	printf("\nZlibDecompressor::ProcessPrestreamHeader 7");
 }
 
 void ZlibDecompressor::ProcessDecompressedData(const byte *inString, size_t length)

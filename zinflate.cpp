@@ -299,27 +299,20 @@ void Inflator::OutputPast(unsigned int length, unsigned int distance)
 
 size_t Inflator::Put2(const byte *inString, size_t length, int messageEnd, bool blocking)
 {
-	printf("\nInflator::Put2 -> 1 ");
 	if (!blocking)
 		throw BlockingInputOnly("Inflator");
 
-	printf("\nInflator::Put2 -> 1.1 ");
 	LazyPutter lp(m_inQueue, inString, length);
-	printf("\nInflator::Put2 -> 1.2 ");
 	try
 	{
 		ProcessInput(messageEnd != 0);
 	}
 	catch(Exception e) {
-		printf("\nInflator::Put2 -> 1.3 ");
 		throw e;
 	}
-	printf("\nInflator::Put2 -> 2 ");
 	if (messageEnd)
 		if (!(m_state == PRE_STREAM || m_state == AFTER_END))
 			throw UnexpectedEndErr();
-
-	printf("\nInflator::Put2 -> 3 ");
 	Output(0, NULL, 0, messageEnd, blocking);
 	return 0;
 }
@@ -342,72 +335,59 @@ bool Inflator::IsolatedFlush(bool hardFlush, bool blocking)
 	return false;
 }
 
-bool Inflator::ProcessInput(bool flush)
+void Inflator::ProcessInput(bool flush)
 {
-	printf("\nProcessInput m_state: %d", m_state);
 	while (true)
 	{
 		switch (m_state)
 		{
 		case PRE_STREAM:
-			printf("\nProcessInput 1");
 			if (!flush && m_inQueue.CurrentSize() < MaxPrestreamHeaderSize())
-				return false;
-			printf("\nProcessInput 1.1");
+				return;
 			try {
 				ProcessPrestreamHeader();
 			}
 			catch(Exception e) {
-				printf("\nProcessPrestreamHeader error %s", e.what());
 				throw e;
 			}
-			printf("\nProcessInput 1.2");
 			m_state = WAIT_HEADER;
 			m_wrappedAround = false;
 			m_current = 0;
 			m_lastFlush = 0;
-			printf("\nProcessInput 1.3");
 			m_window.New(((size_t) 1) << GetLog2WindowSize());
-			printf("\nProcessInput 1.4");
 			break;
 		case WAIT_HEADER:
 			{
-			printf("\nProcessInput 2");
 			// maximum number of bytes before actual compressed data starts
 			const size_t MAX_HEADER_SIZE = BitsToBytes(3+5+5+4+19*7+286*15+19*15);
 			if (m_inQueue.CurrentSize() < (flush ? 1 : MAX_HEADER_SIZE))
-				return false;
+				return;
 			try {
 				DecodeHeader();
 			}
 			catch(Exception e) {
-				printf("\nProcessPrestreamHeader error %s", e.what());
 				throw e;
 			}
 			break;
 			}
 		case DECODING_BODY:
-			printf("\nProcessInput 3");
 			if (!DecodeBody())
-				return false;
+				return;
 			break;
 		case POST_STREAM:
-			printf("\nProcessInput 4");
 			if (!flush && m_inQueue.CurrentSize() < MaxPoststreamTailSize())
-				return false;
+				return;
 			ProcessPoststreamTail();
 			m_state = m_repeat ? PRE_STREAM : AFTER_END;
 			Output(0, NULL, 0, GetAutoSignalPropagation(), true);	// TODO: non-blocking
 			if (m_inQueue.IsEmpty())
-				return false;
+				return;
 			break;
 		case AFTER_END:
-			printf("\nProcessInput 5");
 			m_inQueue.TransferTo(*AttachedTransformation());
-			return false;
+			return;
 		}
 	}
-	return true;
 }
 
 void Inflator::DecodeHeader()

@@ -1384,13 +1384,8 @@ public:
 		//! \details <tt>Put(byte)</tt> calls <tt>Put(byte*, size_t)</tt>.
 		size_t Put(byte inByte, bool blocking=true)
 			{
-				printf("\n======Put1=========");
-				printf("\n======Put1=========");
-				printf("\n======Put1=========");
 				return Put(&inByte, 1, blocking);
-
 			}
-
 		//! \brief Input a byte buffer for processing
 		//! \param inString the byte buffer to process
 		//! \param length the size of the string, in bytes
@@ -1399,11 +1394,16 @@ public:
 		//! \details Internally, Put() calls Put2().
 		size_t Put(const byte *inString, size_t length, bool blocking=true)
 			{
-				printf("\n======Put=========");
-				printf("\n======Put=========");
-				printf("\n======Put=========");
-				return Put2(inString, length, 0, blocking);
-
+				size_t ret = 0;
+				try
+				{
+					ret =  Put2(inString, length, 0, blocking);
+				}
+				catch(Exception e) {
+					printf("\nPut got exception %s", e.what());
+					throw e;
+				}
+				return ret;
 			}
 
 		//! Input a 16-bit word for processing.

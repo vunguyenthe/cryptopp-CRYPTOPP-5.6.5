@@ -781,9 +781,6 @@ public:
 
 	size_t Put2(const byte *inString, size_t length, int messageEnd, bool blocking)
 	{
-		printf("\n======Put2=========");
-		printf("\n======Put2=========");
-		printf("\n======Put2=========");
 		FILTER_BEGIN;
 		m_plaintextQueue.Put(inString, length);
 
@@ -832,8 +829,6 @@ public:
 		FILTER_BEGIN;
 		m_ciphertextQueue.Put(inString, length);
 
-		printf("\n======Put3=========");
-		printf("\n======Put3=========");
 		if (messageEnd)
 		{
 			{

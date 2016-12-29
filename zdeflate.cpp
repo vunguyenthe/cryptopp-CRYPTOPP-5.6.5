@@ -505,13 +505,10 @@ void Deflator::ProcessBuffer()
 
 size_t Deflator::Put2(const byte *str, size_t length, int messageEnd, bool blocking)
 {
-	printf("\nIndex->1");
 	if (!blocking) {
 		throw BlockingInputOnly("Deflator");
-		printf("\nIndex->2");
 	}
 
-	printf("\nIndex->3");
 	size_t accepted = 0;
 	while (accepted < length)
 	{
@@ -521,7 +518,6 @@ size_t Deflator::Put2(const byte *str, size_t length, int messageEnd, bool block
 		ProcessUncompressedData(str+accepted, newAccepted);
 		accepted += newAccepted;
 	}
-	printf("\nIndex->4");
 	CRYPTOPP_ASSERT(accepted == length);
 
 	if (messageEnd)
@@ -533,7 +529,6 @@ size_t Deflator::Put2(const byte *str, size_t length, int messageEnd, bool block
 		WritePoststreamTail();
 		Reset();
 	}
-	printf("\nIndex->5");
 	Output(0, NULL, 0, messageEnd, blocking);
 	return 0;
 }
