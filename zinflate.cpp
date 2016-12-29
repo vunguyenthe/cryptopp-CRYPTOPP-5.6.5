@@ -10,7 +10,6 @@
 #include "zinflate.h"
 #include "secblock.h"
 #include "smartptr.h"
-#include <stdio.h>
 NAMESPACE_BEGIN(CryptoPP)
 
 struct CodeLessThan

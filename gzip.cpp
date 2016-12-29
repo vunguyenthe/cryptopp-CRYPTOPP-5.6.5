@@ -43,10 +43,8 @@ Gunzip::Gunzip(BufferedTransformation *attachment, bool repeat, int propagation)
 
 void Gunzip::ProcessPrestreamHeader()
 {
-	printf("Gunzip::ProcessPrestreamHeader 1");
 	m_length = 0;
 	m_crc.Restart();
-	printf("Gunzip::ProcessPrestreamHeader 2");
 	byte buf[6];
 	byte b, flags;
 

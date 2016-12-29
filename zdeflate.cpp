@@ -9,7 +9,6 @@
 #include "zdeflate.h"
 #include "stdcpp.h"
 #include "misc.h"
-#include <stdio.h>
 NAMESPACE_BEGIN(CryptoPP)
 
 LowFirstBitWriter::LowFirstBitWriter(BufferedTransformation *attachment)

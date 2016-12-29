@@ -82,7 +82,6 @@ and getting us started on the manual.
 
 #ifndef CRYPTOPP_CRYPTLIB_H
 #define CRYPTOPP_CRYPTLIB_H
-#include <stdio.h>
 #include "config.h"
 #include "stdcpp.h"
 #include "trap.h"
@@ -1400,7 +1399,6 @@ public:
 					ret =  Put2(inString, length, 0, blocking);
 				}
 				catch(Exception e) {
-					printf("\nPut got exception %s", e.what());
 					throw e;
 				}
 				return ret;
