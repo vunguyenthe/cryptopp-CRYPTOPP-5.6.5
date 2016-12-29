@@ -639,9 +639,6 @@ void EncryptFile(const char *in, const char *out, const char *passPhrase)
 void DecryptFile(const char *in, const char *out, const char *passPhrase)
 {
 	FileSource f(in, true, new DefaultDecryptorWithMAC(passPhrase, new FileSink(out)));
-
-	FileSource f(filename, true, new DefaultDecryptor(passPhrase, new FileSink(out)));
-
 }
 
 void SecretShareFile(int threshold, int nShares, const char *filename, const char *seed)
